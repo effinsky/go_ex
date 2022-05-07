@@ -15,12 +15,12 @@ func SequentialVsConcurrentAddition() {
 	// make the Sum func itself independent of seq/conc execution mode by
 	// wrapping it in a closure and using a chan to pass data between roroutines
 	ch := make(chan int)
-	go func(l []int, ch chan int) {
-		ch <- Sum(l)
+	go func(sublist []int, ch chan int) {
+		ch <- Sum(sublist)
 	}(numbers[:len(numbers)/2], ch)
 
-	go func(l []int, ch chan int) {
-		ch <- Sum(l)
+	go func(sublist []int, ch chan int) {
+		ch <- Sum(sublist)
 	}(numbers[len(numbers)/2:], ch)
 
 	summedConcurrent := <-ch + <-ch
