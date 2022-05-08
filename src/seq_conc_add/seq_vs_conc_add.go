@@ -1,6 +1,8 @@
 package seqconcadd
 
-import "fmt"
+import (
+	"fmt"
+)
 
 func SequentialVsConcurrentAddition() {
 	numbers := []int{
@@ -8,7 +10,7 @@ func SequentialVsConcurrentAddition() {
 	}
 
 	// use the pub Sum func to perform seq addition
-	summedSequential := Sum(numbers)
+	summedSequential := Sum(numbers...)
 	fmt.Println("summed sequential", summedSequential)
 
 	// use the same func to perform concurrent addition
@@ -16,11 +18,11 @@ func SequentialVsConcurrentAddition() {
 	// wrapping it in a closure and using a chan to pass data between roroutines
 	ch := make(chan int)
 	go func(sublist []int, ch chan int) {
-		ch <- Sum(sublist)
+		ch <- Sum(sublist...)
 	}(numbers[:len(numbers)/2], ch)
 
 	go func(sublist []int, ch chan int) {
-		ch <- Sum(sublist)
+		ch <- Sum(sublist...)
 	}(numbers[len(numbers)/2:], ch)
 
 	summedConcurrent := <-ch + <-ch
@@ -29,8 +31,8 @@ func SequentialVsConcurrentAddition() {
 	fmt.Println("summed concurrent", summedConcurrent)
 }
 
-// make this a pure func
-func Sum(vals []int) (sum int) {
+// made this a pure func
+func Sum(vals ...int) (sum int) {
 	for _, v := range vals {
 		sum += v
 	}
